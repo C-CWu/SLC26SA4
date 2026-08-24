@@ -356,7 +356,7 @@ def run_elbow_method_analysis(train_data, device):
         for i in range(1, len(k_range) - 1):
             sse_2nd_diff[i] = sse[i+1] - 2 * sse[i] + sse[i-1]
             
-        print(f"\n=================== Running Iteration {run_idx}/{search_range} ===================")
+        print(f"\n=================== Running Iteration {run_idx}/{search_range-1} ===================")
         print(f"{'K':<5}{'sse_val':<15}{'sse_diff':<15}{'knee_dist_val':<15}")
         print("-" * 50)
         for i, k in enumerate(k_range):
@@ -403,12 +403,128 @@ def run_elbow_method_analysis(train_data, device):
     print("Elbow Method Analysis Completed!")
     print("="*80 + "\n")
 
+# PCA & Cluster Sample Plotting per Fold
+def plot_fold_pca_and_cluster_samples(round_num, latent_train, labels, kx_train, kmeans):
+    """
+    Generate and save PCA cluster distribution plot and waveform sample plots for each K-Means cluster in current fold.
+    :param round_num: Fold index (0 to 4).
+    :param latent_train: 2D latent representation array of training samples.
+    :param labels: K-Means cluster assignment labels for training samples.
+    :param kx_train: Raw input features (acoustic trend + age diff) of training samples.
+    :param kmeans: Fitted KMeans clustering model.
+    """
+    fold_fig_dir = f'figure/fold_{round_num}'
+    os.makedirs(fold_fig_dir, exist_ok=True)
+
+    n_clusters = 5
+    markers = ['o', 's', '^', 'd', '*']
+    colors = ['blue', 'green', 'red', 'purple', 'orange']
+
+    # 1. PCA transform (or use 2D latent coordinates directly)
+    if latent_train.shape[1] > 2:
+        pca = PCA(n_components=2)
+        latent_pca = pca.fit_transform(latent_train)
+        centroids_pca = pca.transform(kmeans.cluster_centers_)
+    else:
+        latent_pca = latent_train
+        centroids_pca = kmeans.cluster_centers_
+
+    # Plot PCA Cluster Scatter Plot
+    plt.figure(figsize=(3.5, 3.0))
+    legend_handles = []
+    legend_labels = []
+
+    centroid_handle = plt.scatter(centroids_pca[:, 0], centroids_pca[:, 1], marker='X', color='black',
+                                  s=150, edgecolor='white', linewidth=1.5, label='Centroid', zorder=5)
+    legend_handles.append(centroid_handle)
+    legend_labels.append('Centroid')
+
+    for cls in range(n_clusters):
+        mask = (labels == cls)
+        if np.sum(mask) == 0:
+            continue
+        size = np.sum(mask)
+        cluster_points = latent_pca[mask]
+        cluster_handle = plt.scatter(cluster_points[:, 0], cluster_points[:, 1],
+                                     marker=markers[cls % len(markers)], color=colors[cls % len(colors)],
+                                     label=f'Cluster {cls} (N={size})', alpha=0.7, rasterized=True)
+        legend_handles.append(cluster_handle)
+        legend_labels.append(f'Cluster {cls} (N={size})')
+
+    plt.title(f"PCA Plot (Fold {round_num + 1})")
+    plt.xlabel("Principal Component 1")
+    plt.ylabel("Principal Component 2")
+    plt.legend(legend_handles, legend_labels, fontsize=8)
+    plt.tight_layout()
+
+    plt.savefig(f'{fold_fig_dir}/pca_latent_clusters.tiff', format='tiff', dpi=300, pil_kwargs={"compression": "tiff_lzw"})
+    plt.savefig(f'{fold_fig_dir}/pca_latent_clusters.eps', format='eps', dpi=300)
+    plt.show(block=False)
+    plt.pause(0.1)
+    plt.close()
+
+    # 2. Plot 5 closest sample waveforms for each cluster
+    closest_sample_indices = {}
+    centroids = kmeans.cluster_centers_
+
+    plotted_y_vals = []
+    plotted_x_vals = []
+
+    for cls in range(n_clusters):
+        cluster_indices = np.where(labels == cls)[0]
+        if len(cluster_indices) == 0:
+            continue
+        cluster_latents = latent_train[cluster_indices]
+        centroid = centroids[cls]
+        distances = np.linalg.norm(cluster_latents - centroid, axis=1)
+        closest_relative_indices = np.argsort(distances)[:5]
+        closest_sample_indices[cls] = cluster_indices[closest_relative_indices]
+
+        for idx in closest_sample_indices[cls]:
+            plotted_y_vals.append(kx_train[idx, :4])
+            plotted_x_vals.append(np.cumsum(kx_train[idx, 4:]))
+
+    if len(plotted_y_vals) > 0:
+        plotted_y_vals = np.array(plotted_y_vals)
+        plotted_x_vals = np.array(plotted_x_vals)
+        y_min, y_max = plotted_y_vals.min(), plotted_y_vals.max()
+        x_min, x_max = plotted_x_vals.min(), plotted_x_vals.max()
+        y_padding = max((y_max - y_min) * 0.05, 1.0)
+        x_padding = max((x_max - x_min) * 0.05, 0.5)
+        y_lim = (y_min - y_padding, y_max + y_padding)
+        x_lim = (x_min - x_padding, x_max + x_padding)
+
+        for cls in range(n_clusters):
+            if cls not in closest_sample_indices:
+                continue
+            for rank, idx in enumerate(closest_sample_indices[cls]):
+                plt.figure(figsize=(3.5, 2.5))
+                y_vals = kx_train[idx, :4]
+                x_vals = np.cumsum(kx_train[idx, 4:])
+
+                plt.plot(x_vals, y_vals, marker='o', color=colors[cls % len(colors)], label='AC Mean Value Difference')
+                plt.xlim(x_lim)
+                plt.ylim(y_lim)
+                plt.title(f"Fold {round_num + 1} - Cluster {cls} Sample {rank + 1}")
+                plt.xlabel("Age (Shift)")
+                plt.ylabel("AC Mean Value Difference")
+                plt.legend(fontsize=8)
+                plt.tight_layout()
+
+                filename = f"{fold_fig_dir}/cluster_{cls}_sample_{rank + 1}"
+                plt.savefig(f"{filename}.tiff", format='tiff', dpi=300, pil_kwargs={"compression": "tiff_lzw"})
+                plt.savefig(f"{filename}.eps", format='eps', dpi=300)
+                plt.show(block=False)
+                plt.pause(0.1)
+                plt.close()
+
 # AE + KMeans Training per Fold
-def train_ae_and_kmeans(train_data, device, run_elbow=False):
+def train_ae_and_kmeans(train_data, device, round_num=0, run_elbow=False):
     """
     Train Autoencoder and fit K-Means clustering model (K=5) on a single fold's training dataset.
     :param train_data: Training dataset DataFrame for current fold.
     :param device: Compute device ('cpu' or 'cuda').
+    :param round_num: Fold index (0 to 4).
     :param run_elbow: Whether to run 50-run Elbow Method analysis (set to True for Fold 0 only).
     :return: Tuple of (encoder, kmeans, data_mean, data_std).
     """
@@ -457,7 +573,10 @@ def train_ae_and_kmeans(train_data, device, run_elbow=False):
         latent_train = latent_train.cpu().numpy()
 
     kmeans = KMeans(n_clusters=5, random_state=0)
-    kmeans.fit(latent_train)
+    labels = kmeans.fit_predict(latent_train)
+
+    # Plot PCA cluster scatter plot and representative waveform sample plots for this fold
+    plot_fold_pca_and_cluster_samples(round_num, latent_train, labels, kx_train, kmeans)
 
     return encoder, kmeans, data_mean, data_std
 
@@ -732,7 +851,7 @@ if __name__ == '__main__':
 
         # Run 50-run elbow analysis ONLY on Fold 0
         run_elbow = (round_num == 0)
-        encoder_fold, kmeans_fold, mean_fold, std_fold = train_ae_and_kmeans(train_data, device, run_elbow=run_elbow)
+        encoder_fold, kmeans_fold, mean_fold, std_fold = train_ae_and_kmeans(train_data, device, round_num=round_num, run_elbow=run_elbow)
 
         # Annotate cluster labels on all fold splits
         create_kmeans_for_fold(train_data, kmeans_fold, encoder_fold, mean_fold, std_fold, device)
@@ -1026,12 +1145,15 @@ if __name__ == '__main__':
         """
         Format evaluation metric list into 'mean ± std' string formatted to 4 decimal places.
         :param lst: Metric value list across 5 CV folds.
-        :return: Formatted string or 'N/A' if empty.
+        :return: Formatted string or 'N/A' if empty or all NaN.
         """
         if lst is None or (isinstance(lst, list) and len(lst) == 0):
             return "N/A"
-        arr = np.array(lst)
-        return f"{np.mean(arr):.4f}±{np.std(arr):.4f}"
+        arr = np.array(lst, dtype=float)
+        valid_arr = arr[~np.isnan(arr)]
+        if len(valid_arr) == 0:
+            return "N/A"
+        return f"{np.mean(valid_arr):.4f}±{np.std(valid_arr):.4f}"
 
     print("\n" + "=" * 202)
     print(f"{'FINAL EVALUATION SUMMARY (Averages across 5 Folds with mean ± std)':^202}")

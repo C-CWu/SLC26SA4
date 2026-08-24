@@ -35,14 +35,17 @@ SLC26A4/
 ├── utils.py                    # Preprocessing, data loading (load_s2_table), and split utilities
 │
 ├── figure/                     # Directory for output plots & visualization files
-│   ├── tsne/                   # Latent cluster plots and sample waveform plots
+│   ├── run_{1..50}/            # Fold 0 50-run Elbow Method analysis plots and logs
+│   ├── fold_{0..4}/            # 5-Fold PCA cluster scatter plots and waveform sample plots
 │   └── (SHAP & calibration plots)
 │
 ├── log/                        # Directory for log files
 │   └── kmeans.log              # Combined execution and evaluation summary log
 │
 └── model_weight/               # Directory for saved model files & checkpoints
-    └── saved_models/           # Saved models across 5 folds (fold_0..fold_4)
+    ├── best_model.pth          # Temporary best deep learning checkpoint
+    └── saved_models/
+        └── fold_{0..4}/        # Saved model artifacts across 5 folds (fold_0..fold_4)
 ```
 
 ---
@@ -64,12 +67,22 @@ Below is a detailed breakdown of each Python script in the repository, including
   ```
 * **Output Files / Folders**:
   * `log/kmeans.log` — Consolidated stdout log containing execution details, Fold 0 elbow metrics, per-fold evaluation progress, and the 5-Fold average metric summary table (`mean ± std`).
-  * `model_weight/saved_models/fold_{0..4}/` — Serialized model checkpoints for each fold:
-    * `autoencoder.pth` — Trained PyTorch representation weights for the fold.
-    * `kmeans.pkl` — Serialized K-Means clustering model for the fold.
-    * `scaler_mean.npy` / `scaler_std.npy` — Feature scaling arrays for the fold.
-    * `elasticnet_freq_{0..5}.pkl` — Frequency-specific regression models.
-    * `catboost_catboost.cbm` — Serialized CatBoost classifier for the proposed model.
+  * `figure/run_{1..50}/` — Generated during the 50-run Elbow Method analysis on Fold 0:
+    * `kmeans_metrics.log` — Log containing SSE, 2nd differences, and Kneedle distance table for the run.
+    * `elbow_method.tiff` — Sum of Squared Errors (SSE) curve in TIFF format (300 DPI, LZW compressed).
+    * `elbow_method.eps` — Sum of Squared Errors (SSE) curve in EPS format (300 DPI).
+  * `figure/fold_{0..4}/` — Generated during the K-Means clustering for each of the 5 cross-validation folds:
+    * `pca_latent_clusters.tiff` / `pca_latent_clusters.eps` — PCA scatter plot of patient latent trajectories grouped by K-Means cluster labels with centroids and sample counts.
+    * `cluster_{0..4}_sample_{1..5}.tiff` / `cluster_{0..4}_sample_{1..5}.eps` — Representative waveform line plots of raw hearing threshold trajectories for the 5 closest samples to each cluster centroid (25 plots per fold).
+  * `model_weight/` — Checkpoints and serialized model artifacts:
+    * `best_model.pth` — Temporary best PyTorch checkpoint during deep learning training.
+    * `saved_models/fold_{0..4}/` — Fold-specific model artifacts for each fold:
+      * `autoencoder.pth` — Trained PyTorch Autoencoder state dictionary.
+      * `kmeans.pkl` — Serialized Scikit-learn K-Means clustering model object.
+      * `scaler_mean.npy` / `scaler_std.npy` — Feature normalization mean and standard deviation arrays.
+      * `elasticnet_freq_{0..5}.pkl` — Frequency-specific ElasticNetCV regression models for audiometric channels 0 to 5.
+      * `catboost_catboost.cbm` — Serialized CatBoost classifier for the proposed pipeline.
+      * `clf_all_positive.pkl` / `clf_all_negative.pkl` — Serialized baseline classifier objects.
 
 ---
 

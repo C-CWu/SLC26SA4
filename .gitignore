@@ -37,7 +37,7 @@ Icon?
 *.iws
 *.ipr
 
-# Vim / Emacs 暫存
+# Vim / Emacs 
 *.swp
 *.swo
 *~
@@ -46,7 +46,7 @@ Icon?
 # ==========================================
 # 3. Python related
 # ==========================================
-# 編譯與快取檔案
+# cache
 __pycache__/
 *.py[cod]
 *$py.class
@@ -79,7 +79,7 @@ env.bak/
 venv.bak/
 .conda/
 
-# Jupyter Notebook 檢查點
+# Jupyter Notebook 
 .ipynb_checkpoints
 
 # test
@@ -135,7 +135,16 @@ Makefile
 *.pth
 *.weights
 *.ckpt
+*.pkl
+*.pickle
+*.cbm
+*.npy
+*.npz
 logs/
+log/
+figure/
+model_weight/
+catboost_info/
 wandb/
 mlruns/
 outputs/
@@ -144,8 +153,9 @@ temp/
 # =========================================
 # 6. User defined
 # =========================================
-!S2 table.csv
+!S2 Table.csv
 *.tiff
+*.tif
 *.eps
 *.log
 *.txt
