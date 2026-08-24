@@ -1,0 +1,153 @@
+# ==========================================
+# 1. OS-specific
+# ==========================================
+# Windows 
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Linux 
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+
+# ==========================================
+# 2. IDE (Editors & IDEs)
+# ==========================================
+# VS Code / Antigravity
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.history/
+
+# JetBrains (PyCharm, CLion)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Emacs 暫存
+*.swp
+*.swo
+*~
+
+
+# ==========================================
+# 3. Python related
+# ==========================================
+# 編譯與快取檔案
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# env (Conda / venv / uv)
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# Jupyter Notebook 檢查點
+.ipynb_checkpoints
+
+# test
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+luigi.cfg
+
+
+# ==========================================
+# 4. C++ 
+# ==========================================
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.exp
+*.idb
+*.pdb
+*.ilk
+*.manifest
+
+# CMake 
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake-build-*/
+Makefile
+*.cmake
+.ninja_*
+
+
+# ==========================================
+# 5.Data & Output
+# ==========================================
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.weights
+*.ckpt
+logs/
+wandb/
+mlruns/
+outputs/
+temp/
+
+# =========================================
+# 6. User defined
+# =========================================
+!S2 table.csv
+*.tiff
+*.eps
+*.log
+*.txt
+
+
