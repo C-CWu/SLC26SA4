@@ -1,0 +1,53 @@
+Academic and Non-Commercial Public License (ANCL)
+Version 1.0
+
+Copyright (c) 2026 Anonymized Authors for Peer Review
+
+Permission is hereby granted, free of charge, to any person or
+institution obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, and/or sublicense copies of the
+Software, subject to the following conditions:
+
+1. NON-COMMERCIAL USE ONLY:
+   The Software, and any modified or derivative works based upon it, may
+   NOT be used, distributed, or integrated into any product, service, or
+   system for commercial purposes, financial gain, or any profit-making
+   activity. The usage of this Software is strictly restricted to
+   academic research, educational purposes, and non-commercial personal
+   or institutional use.
+
+2. MANDATORY OPEN SOURCING OF MODIFICATIONS (COPYLEFT):
+   If you modify this Software, or create a derivative work based on it,
+   you must license the entire resulting work under this exact same
+   Academic and Non-Commercial Public License (ANCL). You must make the
+   complete source code of your modified version publicly accessible and
+   free of charge for academic and non-commercial users.
+
+3. ATTRIBUTION:
+   The above copyright notice and this permission notice shall be
+   included in all copies or substantial portions of the Software.
+
+4. NO WARRANTY:
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5. ACADEMIC CITATION:
+   If you use the Software, its modified versions, or the associated
+   Dataset in academic research, publications, or presentations, you
+   agree to formally cite the following paper (or this repository) 
+   designated by the authors.
+
+6. NETWORK AND REMOTE USE:
+   Making the Software, or any modified version thereof, available as a
+   network service, SaaS (Software as a Service), API, or commercial
+   cloud-based platform for external users (whether for a fee or free of
+   charge, if associated with commercial operations) shall be deemed a
+   commercial purpose and is strictly prohibited without prior written
+   permission.
