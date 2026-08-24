@@ -147,5 +147,5 @@ No.,Gender,Genotype (SLCOne non-LoF6A4),EVA_R,EVA_L,VA size_R,VA size_L,Mondini_
 
 ### License
 Code and Dataset (S2 table.csv) have different license.
-- **Source Code (程式碼部分)**: Licensed under the [Academic and Non-Commercial Public License (ANCL)](./LICENSE).
-- **Dataset (資料部分)**: Licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+- **Source Code**: Licensed under the [Academic and Non-Commercial Public License (ANCL)](./LICENSE).
+- **Dataset**: Licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
