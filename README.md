@@ -144,3 +144,8 @@ No.,Gender,Genotype (SLCOne non-LoF6A4),EVA_R,EVA_L,VA size_R,VA size_L,Mondini_
 * **`L_AC0.25k`, `L_AC0.5k`, `L_AC1k`, `L_AC2k`, `L_AC4k`, `L_AC8k`**: Air conduction thresholds (dB HL) for the left ear at frequencies 250 Hz, 500 Hz, 1 kHz, 2 kHz, 4 kHz, and 8 kHz respectively.
 * **`R_AC125`, `L_AC125`, `R_AC6k`, `L_AC6k`**: Air conduction thresholds (dB HL) at 125 Hz and 6 kHz. *(Unused/ignored in main feature calculations)*.
 * **`R_BC0.5k` to `R_BC4k` & `L_BC0.5k` to `L_BC4k`**: Bone conduction thresholds (dB HL) at 500 Hz, 1 kHz, 2 kHz, and 4 kHz. *(Unused/ignored in main feature calculations)*.
+
+### License
+Code and Dataset (S2 table.csv) have different license.
+- **Source Code (程式碼部分)**: Licensed under the [Academic and Non-Commercial Public License (ANCL)](./LICENSE).
+- **Dataset (資料部分)**: Licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
